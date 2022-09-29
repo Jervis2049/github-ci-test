@@ -19,10 +19,10 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: npm i -g pnpm@7.6.0
       - name: Install
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install
       - name: Build
         run: pnpm build
       - name: Publish to NPM
-        run: npm publish  --registry=https://npm.pkg.github.com/
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
