@@ -6,36 +6,23 @@ on:
       - main
 
 jobs:
-  publish-npm:
+  release:
     if: "contains(github.event.head_commit.message, 'release')"
-    runs-on: ${{matrix.os}}
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        node-version: [16.x]
-      fail-fast: false
-
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2.0.1
+      - uses: actions/checkout@v3
         with:
-          version: 6.28.0
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
           registry-url: https://registry.npmjs.org/
-          cache: 'pnpm'
-
-      - name: Install Dependencies
-        run: pnpm install
-
+      - run: npm i -g pnpm@7.5.2
+      - name: Install
+        run: pnpm install --no-frozen-lockfile
+      - name: Build
+        run: pnpm build
       - name: Publish to NPM
-        run: pnpm -r publish --access public --no-git-checks
+        run: npm publish --access public
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
