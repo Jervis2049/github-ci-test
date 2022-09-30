@@ -1,4 +1,4 @@
 export function test() {
-  let a = 3
+  let a = 4
   return a++
 }
